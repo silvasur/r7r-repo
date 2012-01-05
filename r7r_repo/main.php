@@ -174,6 +174,47 @@ $url_handlers = array(
 		$ste->vars["success"] = "Logged out successfully.";
 		$url_next = array("_prelude", "index");
 	},
+	"register" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user, $settings;
+		
+		if($settings["repo_mode"] == "private")
+			throw new NotFoundError();
+		
+		if($user !== NULL)
+		{
+			$url_next = array("index");
+			return;
+		}
+		
+		$url_next = array();
+		$ste->vars["menu"]  = "register";
+		$ste->vars["title"] = "Register";
+		
+		if(isset($_POST["register"]))
+		{
+			if(empty($_POST["username"]) or empty($_POST["password"]))
+				$ste->vars["error"] = "Formular not filled out.";
+			else
+			{
+				try
+				{
+					$u = User::by_name($_POST["username"]);
+					$ste->vars["error"] = "Username already exists.";
+				}
+				catch(DoesNotExistError $e)
+				{
+					$u = User::create($_POST["username"]);
+					$u->isadmin = False;
+					$u->pwhash = PasswordHash::create($_POST["password"]);
+					$u->save();
+					$ste->vars["success"] = "Account successfully created. You can now log in.";
+				}
+			}
+		}
+		
+		echo $ste->exectemplate("register.html");
+	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
 		global $settings, $ste;
