@@ -241,9 +241,9 @@ class Package extends BySQLRowEnabled
 	public $lastupdate;
 	public $txtversion;
 	
-	public function get_id()   { return $id;   }
-	public function get_name() { return $name; }
-	public function get_user() { return $user; }
+	public function get_id()   { return $this->id;   }
+	public function get_name() { return $this->name; }
+	public function get_user() { return $this->user; }
 	
 	protected function __construct() {}
 	
@@ -279,10 +279,11 @@ class Package extends BySQLRowEnabled
 			$obj->txtversion  = "";
 			$obj->description = "";
 			
-			qdb("INSERT INTO `PREFIX_packages` (`name`, `user`, `author`, `lastupdate`, `lastversion`, `txtversion`, description`, `description`) VALUES ('%s', %d, '', UNIX_TIMESTAMP(), 0, '', '')", $name, $user->get_id());
+			qdb("INSERT INTO `PREFIX_packages` (`name`, `user`, `author`, `lastupdate`, `lastversion`, `txtversion`, `description`) VALUES ('%s', %d, '', UNIX_TIMESTAMP(), 0, '', '')", $name, $user->get_id());
 			$obj->id = mysql_insert_id();
 			
-			mkdir(dirname(__FILE__) . "/../packages/" . $this->name);
+			mkdir(dirname(__FILE__) . "/../packages/" . $obj->name);
+			mkdir(dirname(__FILE__) . "/../packages/" . $obj->name . "/versions");
 			
 			return $obj;
 		}
@@ -311,7 +312,7 @@ class Package extends BySQLRowEnabled
 		$packagelist = array();
 		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
 		while($sqlrow = mysql_fetch_assoc($result))
-			$packagelist[] = array($sqlrow["name"], $sqlrow["lastversion"], $sqlrow["description"]);
+			$packagelist[] = array($sqlrow["name"], $sqlrow["lastversion"] + 0, $sqlrow["description"]);
 		file_put_contents(dirname(__FILE__) . "/../packagelist", serialize($packagelist));
 	}
 	
@@ -342,20 +343,20 @@ class Package extends BySQLRowEnabled
 		return $rv;
 	}
 	
-	public function newversion($pgk)
+	public function newversion($pkg)
 	{
 		global $settings;
 		if($pkg->name != $this->name)
 			throw new NotAllowedError("Package name not equal.");
 		if($pkg->versioncount <= $this->lastversion)
 			throw new NotAllowedError("Older or same version.");
-		$pkg->updatepath = $settings["root_url"] . "/packages/" . urlencode($this->name) . "/update";
+		$pkg->updatepath = $settings["repo_baseurl"] . "/packages/" . urlencode($this->name) . "/update";
 		
 		$pkg_ser = $pkg->save();
-		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/versions/" . $pkg->versioncount, $pkg_ser);
-		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/versions/current", $pkg_ser);
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this->name) . "/versions/" . $pkg->versioncount, $pkg_ser);
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this->name) . "/versions/current", $pkg_ser);
 		$meta = $pkg->extract_meta();
-		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/meta", serialize($meta));
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this->name) . "/meta", serialize($meta));
 		
 		$this->lastversion = $pkg->versioncount;
 		$this->txtversion  = $pkg->versiontext;
@@ -369,14 +370,14 @@ class Package extends BySQLRowEnabled
 			"dl-path"         => $settings["root_url"] . "/packages/" . urlencode($this->name) . "/versions/" . $this->lastversion
 		);
 		
-		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/update", serialize($update_info));
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this->name) . "/update", serialize($update_info));
 		
 		self::update_lists();
 	}
 	
 	public function save()
 	{
-		qdb("UPDATE `PREFIX_packages` SET `lastversion` = %d, `lastupdate` = %d, `txtversion` = '%s', `description` = '%s' WHERE `id` = %d", $this->lastversion, $this->lastupdate, $this->txtversion, $this->description, $this->id);
+		qdb("UPDATE `PREFIX_packages` SET `lastversion` = %d, `author` = '%s', `lastupdate` = %d, `txtversion` = '%s', `description` = '%s' WHERE `id` = %d", $this->lastversion, $this->author, $this->lastupdate, $this->txtversion, $this->description, $this->id);
 	}
 	
 	public function delete()
