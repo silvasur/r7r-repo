@@ -10,6 +10,7 @@
 				<th>Package Name</th>
 				<th>Version</th>
 				<th>Description</th>
+				<th>Author</th>
 				<th>Last update</th>
 			</tr>
 		</thead>
@@ -23,13 +24,14 @@
 							<td><a href="$rel_path_to_root/p/<ste:escape>$pkg[name]</ste:escape>"><ste:escape>$pkg[name]</ste:escape></a></td>
 							<td><ste:escape>$pkg[version]</ste:escape></td>
 							<td><ste:escape>$pkg[description]</ste:escape></td>
+							<td><ste:escape>$pkg[author]</ste:escape></td>
 							<td><ste:date format="%d. %h. %Y, %H:%M:%S">$pkg[last_update]</ste:date></td>
 						</tr>
 					</ste:foreach>
 				</ste:then>
 				<ste:else>
 					<tr>
-						<td style="text-align: center; font-style: italic;" colspan="4">No Packages available.</td>
+						<td style="text-align: center; font-style: italic;" colspan="5">No Packages available.</td>
 					</tr>
 				</ste:else>
 			</ste:if>

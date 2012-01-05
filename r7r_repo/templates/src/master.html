@@ -34,7 +34,7 @@
 							?{$repo[public]|<ste:menu_elem name="upload" path="/upload">Upload Package</ste:menu_elem>|}
 						</ste:else>
 					</ste:if>
-					<ste:menu_elem name="my_plugins" path="/my_plugins">My Plugins</ste:menu_elem>
+					<ste:menu_elem name="my_packages" path="/my_packages">My Plugins</ste:menu_elem>
 					<ste:menu_elem name="account" path="/account">My Account</ste:menu_elem>
 					<ste:menu_elem name="logout" path="/logout">Logout</ste:menu_elem>
 				</ste:then>
@@ -45,6 +45,7 @@
 		</ul>
 		<div id="contentwrapper">
 			<div id="metabar">
+				<ste:block name="additional_metabar_modules" />
 				<div class="metabar_module">
 					<h2>Repository Base URL</h2>
 					<input type="text" readonly="readonly" value="<ste:escape>$repo[baseurl]</ste:escape>" />
@@ -79,7 +80,6 @@
 						</ste:else>
 					</ste:if>
 				</div>
-				<ste:block name="additional_metabar_modules" />
 			</div>
 			<div id="content">
 				<ste:block name="content" />

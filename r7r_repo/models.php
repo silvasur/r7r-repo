@@ -252,6 +252,7 @@ class Package extends BySQLRowEnabled
 		$this->id          = $sqlrow["id"];
 		$this->name        = $sqlrow["name"];
 		$this->user        = User::by_id($sqlrow["user"]);
+		$this->author      = $sqlrow["author"];
 		$this->lastversion = $sqlrow["lastversion"];
 		$this->description = $sqlrow["description"];
 		$this->lastupdate  = $sqlrow["lastupdate"];
@@ -272,12 +273,13 @@ class Package extends BySQLRowEnabled
 			$obj = new self;
 			$obj->name        = $name;
 			$obj->user        = $user;
+			$obj->author      = "";
 			$obj->lastupdate  = time();
 			$obj->lastversion = 0;
 			$obj->txtversion  = "";
 			$obj->description = "";
 			
-			qdb("INSERT INTO `PREFIX_packages` (`name`, `user`, `lastupdate`, `lastversion`, `txtversion`, description`, `description`) VALUES ('%s', %d, UNIX_TIMESTAMP(), 0, '', '')", $name, $user->get_id());
+			qdb("INSERT INTO `PREFIX_packages` (`name`, `user`, `author`, `lastupdate`, `lastversion`, `txtversion`, description`, `description`) VALUES ('%s', %d, '', UNIX_TIMESTAMP(), 0, '', '')", $name, $user->get_id());
 			$obj->id = mysql_insert_id();
 			
 			mkdir(dirname(__FILE__) . "/../packages/" . $this->name);
@@ -288,7 +290,7 @@ class Package extends BySQLRowEnabled
 	
 	public static function by_id($id)
 	{
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `id` = %d", $id);
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `id` = %d", $id);
 		$sqlrow = mysql_fetch_assoc($result);
 		if($sqlrow === False)
 			throw new DoesNotExistError();
@@ -297,7 +299,7 @@ class Package extends BySQLRowEnabled
 	
 	public static function by_name($name)
 	{
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `name` = '%s'", $name);
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `name` = '%s'", $name);
 		$sqlrow = mysql_fetch_assoc($result);
 		if($sqlrow === False)
 			throw new DoesNotExistError();
@@ -307,7 +309,7 @@ class Package extends BySQLRowEnabled
 	public static function update_lists()
 	{
 		$packagelist = array();
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
 		while($sqlrow = mysql_fetch_assoc($result))
 			$packagelist[] = array($sqlrow["name"], $sqlrow["lastversion"], $sqlrow["description"]);
 		file_put_contents(dirname(__FILE__) . "/../packagelist", serialize($packagelist));
@@ -316,7 +318,7 @@ class Package extends BySQLRowEnabled
 	public static function all()
 	{
 		$rv = array();
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
 		while($sqlrow = mysql_fetch_assoc($result))
 			$rv[] = self::by_sqlrow($sqlrow);
 		return $rv;
@@ -325,7 +327,7 @@ class Package extends BySQLRowEnabled
 	public static function latest()
 	{
 		$rv = array();
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1 ORDER BY `lastupdate` DESC LIMIT 0,15");
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1 ORDER BY `lastupdate` DESC LIMIT 0,15");
 		while($sqlrow = mysql_fetch_assoc($result))
 			$rv[] = self::by_sqlrow($sqlrow);
 		return $rv;
@@ -334,7 +336,7 @@ class Package extends BySQLRowEnabled
 	public static function search($search)
 	{
 		$rv = array();
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `name` LIKE '%%%s%%' OR `description` LIKE '%%%s%%'", $search, $search);
+		$result = qdb("SELECT `id`, `name`, `author`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `name` LIKE '%%%s%%' OR `description` LIKE '%%%s%%'", $search, $search);
 		while($sqlrow = mysql_fetch_assoc($result))
 			$rv[] = self::by_sqlrow($sqlrow);
 		return $rv;
@@ -358,6 +360,7 @@ class Package extends BySQLRowEnabled
 		$this->lastversion = $pkg->versioncount;
 		$this->txtversion  = $pkg->versiontext;
 		$this->description = $pkg->short_description;
+		$this->author      = $pkg->author;
 		$this->lastupdate  = time();
 		$this->save();
 		

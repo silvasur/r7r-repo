@@ -15,6 +15,7 @@ if(!SKIP_TABLE_CREATION)
 	$db_structure = "CREATE TABLE IF NOT EXISTS `PREFIX_packages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text COLLATE utf8_unicode_ci NOT NULL,
+  `author` text COLLATE utf8_unicode_ci NOT NULL,
   `lastversion` int(11) NOT NULL,
   `user` int(11) NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
@@ -121,6 +122,7 @@ $url_handlers = array(
 		$ste->vars["latest_pkgs"] = array_map(function($pkg) { return array(
 			"name"        => $pkg->get_name(),
 			"version"     => $pkg->txtversion,
+			"author"      => $pkg->author,
 			"description" => $pkg->description,
 			"last_update" => $pkg->lastversion
 		); }, $latest);
