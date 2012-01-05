@@ -1,0 +1,60 @@
+<ste:load name="master.html" />
+<ste:block name="content">
+	<ste:default_error />
+	<ste:default_success />
+	
+	<h2>Administration</h2>
+	
+	<form action="$rel_path_to_root/admin" method="POST" accept-charset="UTF-8">
+		<h3>Repository settings</h3>
+		<strong>Repository name:</strong> <input type="text" name="repo_name" value="<ste:escape>$repo[name]</ste:escape>" /><br />
+		<strong>Repository description:</strong> <input type="text" name="repo_description" value="<ste:escape>$repo[description]</ste:escape>" /><br />
+		<strong>Repository baseurl:</strong> <input type="text" name="repo_baseurl" value="<ste:escape>$repo[baseurl]</ste:escape>" /><br />
+		<strong>Repository mode:</strong>
+		<select name="repo_mode">
+			<option value="public"?{$repo[public]| selected="selected"|}>Public</option>
+			<option value="private"?{$repo[public]|| selected="selected"}>Private</option>
+		</select><br />
+		<input type="submit" name="save_settings" />
+	</form>
+	
+	<form action="$rel_path_to_root/admin" method="POST" accept-charset="UTF-8">
+		<h3>New user</h3>
+		<strong>Username:</strong> <input type="text" name="username" /> <br />
+		<strong>Password:</strong> <input type="password" name="password" /> <br />
+		<input type="submit" name="new_user" />
+	</form>
+	
+	<form action="$rel_path_to_root/admin" method="POST" accept-charset="UTF-8">
+		<h3>Users</h3>
+		<table class="listtab fullwidth">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>Username</th>
+					<th>Administrator?</th>
+				</tr>
+			</thead>
+			<tbody>
+				<ste:foreach array="users" value="u">
+					<tr>
+						<td><input type="checkbox" name="users_multiselect[]" value="$u[id]" /></td>
+						<td><ste:escape>$u[name]</ste:escape></td>
+						<td>?{$u[admin]|<strong>Yes</strong>|No}</td>
+					</tr>
+				</ste:foreach>
+			</tbody>
+		</table>
+		<div>
+			<input type="submit" name="delete_users" value="Delete"/>
+			<select name="really_delete">
+				<option value="yes">Yes</option>
+				<option value="no" selected="selected">No</option>
+			</select>
+			|
+			<input type="submit" name="make_admin" value="Make an admin" />
+			|
+			<input type="submit" name="make_normal_user" value="Make a normal user" />
+		</div>
+	</form>
+</ste:block>

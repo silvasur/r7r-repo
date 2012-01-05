@@ -215,6 +215,128 @@ $url_handlers = array(
 		
 		echo $ste->exectemplate("register.html");
 	},
+	"admin" => function(&$data, $url_now, &$url_next)
+	{
+		global $settings, $ste, $user;
+		
+		if(($user === NULL) or (!$user->isadmin))
+			throw new NotFoundError();
+		
+		$url_next = array();
+		$ste->vars["menu"]  = "admin";
+		$ste->vars["title"] = "Administration";
+		
+		if(isset($_POST["save_settings"]))
+		{
+			$settings["repo_name"]        = $_POST["repo_name"];
+			$settings["repo_description"] = $_POST["repo_description"];
+			$settings["repo_baseurl"]     = $_POST["repo_baseurl"];
+			
+			if($_POST["repo_mode"] == "public")
+				$settings["repo_mode"] = "public";
+			if($_POST["repo_mode"] == "private")
+				$settings["repo_mode"] = "private";
+			
+			update_repometa();
+			
+			$ste->vars["success"] = "Settings saved.";
+		}
+		
+		if(isset($_POST["new_user"]))
+		{
+			if(empty($_POST["username"]) or empty($_POST["password"]))
+				$ste->vars["error"] = "Formular not filled out.";
+			else
+			{
+				try
+				{
+					$u = User::by_name($_POST["username"]);
+					$ste->vars["error"] = "Username already exists.";
+				}
+				catch(DoesNotExistError $e)
+				{
+					$u = User::create($_POST["username"]);
+					$u->isadmin = False;
+					$u->pwhash = PasswordHash::create($_POST["password"]);
+					$u->save();
+					$ste->vars["success"] = "Account successfully created.";
+				}
+			}
+		}
+		
+		if(isset($_POST["delete_users"]) and ($_POST["really_delete"] == "yes"))
+		{
+			foreach($_POST["users_multiselect"] as $uid)
+			{
+				try
+				{
+					$u = User::by_id($uid);
+					$u->delete();
+				}
+				catch(DoesNotExistError $e)
+				{
+					continue;
+				}
+			}
+			
+			$ste->vars["success"] = "Users deleted.";
+		}
+		
+		if(isset($_POST["make_admin"]))
+		{
+			foreach($_POST["users_multiselect"] as $uid)
+			{
+				try
+				{
+					$u = User::by_id($uid);
+					$u->isadmin = True;
+					$u->save();
+				}
+				catch(DoesNotExistError $e)
+				{
+					continue;
+				}
+			}
+			
+			$ste->vars["success"] = "Okay.";
+		}
+		
+		if(isset($_POST["make_normal_user"]))
+		{
+			foreach($_POST["users_multiselect"] as $uid)
+			{
+				try
+				{
+					$u = User::by_id($uid);
+					$u->isadmin = False;
+					$u->save();
+				}
+				catch(DoesNotExistError $e)
+				{
+					continue;
+				}
+			}
+			
+			$ste->vars["success"] = "Okay.";
+		}
+		
+		/* Fill data */
+		$ste->vars["repo"] = array(
+			"name"        => $settings["repo_name"],
+			"description" => $settings["repo_description"],
+			"baseurl"     => $settings["repo_baseurl"],
+			"public"      => ($settings["repo_mode"] == "public")
+		);
+		
+		$users = User::all();
+		$ste->vars["users"] = array_map(function($u) { return array(
+			"id"    => $u->get_id(),
+			"name"  => $u->get_name(),
+			"admin" => $u->isadmin
+		); }, $users);
+		
+		echo $ste->exectemplate("admin.html");
+	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
 		global $settings, $ste;
