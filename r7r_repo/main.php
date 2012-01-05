@@ -337,6 +337,31 @@ $url_handlers = array(
 		
 		echo $ste->exectemplate("admin.html");
 	},
+	"account" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user;
+		
+		if($user === NULL)
+			throw new NotFoundError();
+		
+		$url_next = array();
+		$ste->vars["menu"]  = "account";
+		$ste->vars["title"] = "My Account";
+		
+		if(isset($_POST["set_new_password"]))
+		{
+			if(empty($_POST["new_password"]))
+				$ste->vars["error"] = "Password must not be empty.";
+			else
+			{
+				$user->pwhash = PasswordHash::create($_POST["new_password"]);
+				$user->save();
+				$ste->vars["success"] = "Password set.";
+			}
+		}
+		
+		echo $ste->exectemplate("account.html");
+	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
 		global $settings, $ste;

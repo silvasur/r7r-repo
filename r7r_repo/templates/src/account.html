@@ -1,0 +1,12 @@
+<ste:load name="master.html" />
+<ste:block name="content">
+	<ste:default_error />
+	<ste:default_success />
+	
+	<form action="$rel_path_to_root/account" method="POST" accept-charset="UTF-8">
+		<h2>Change Password</h2>
+		
+		<strong>New password:</strong> <input type="password" name="new_password" />
+		<input type="submit" name="set_new_password" />
+	</form>
+</ste:block>
