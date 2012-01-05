@@ -20,7 +20,7 @@
 				<ste:then>
 					<ste:foreach array="latest_pkgs" value="pkg">
 						<tr>
-							<td><ste:escape>$pkg[name]</ste:escape></td>
+							<td><a href="$rel_path_to_root/p/<ste:escape>$pkg[name]</ste:escape>"><ste:escape>$pkg[name]</ste:escape></a></td>
 							<td><ste:escape>$pkg[version]</ste:escape></td>
 							<td><ste:escape>$pkg[description]</ste:escape></td>
 							<td><ste:date format="%d. %h. %Y, %H:%M:%S">$pkg[last_update]</ste:date></td>
