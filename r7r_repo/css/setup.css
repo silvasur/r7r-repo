@@ -1,0 +1,11 @@
+body {
+	text-align: center;
+}
+
+h1 {
+	font-weight: bold;
+	font-size: 16pt;
+	border-bottom: 1px solid gray;
+	margin: 0px 0px 1em;
+	padding: 1em 0px 0.5em;
+}

@@ -1,0 +1,114 @@
+#heading {
+	text-align: center;
+	border-bottom: 1px solid black;
+	margin: 0px auto 0px;
+	padding: 10mm 3mm 5mm
+}
+
+h1 {
+	font-size: 24pt;
+	font-weight: bold;
+	padding: 0px;
+	margin: 0px auto 2mm;
+}
+
+h2 {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#mainmenu {
+	border-bottom: 1px solid black;
+	list-style: none;
+	height: 10mm;
+	padding: 0px;
+	margin: 0px 0px 2mm;
+	overflow: hidden;
+}
+
+#mainmenu li {
+	float: left;
+	margin: 0px 0px 2mm;
+}
+
+#mainmenu li a {
+	color: #444;
+	text-decoration: none;
+	font-size: 12pt;
+	margin: 0px;
+	padding: 2mm 7.5mm 0px;
+	background: white;
+	display: block;
+	height: 10mm;
+}
+
+#mainmenu li.active a {
+	color: black;
+	font-weight: bold;
+}
+
+#mainmenu li a:hover {
+	background: #eee;
+	color: #000;
+}
+
+#metabar {
+	float: right;
+	width: 50mm;
+	margin: 0px;
+	padding: 0px 0px 0px 5mm;
+	border-left: 1px solid black;
+}
+
+div.metabar_module {
+	border-top: 1px solid black;
+	padding: 2mm 0px 0px;
+	margin: 2mm 0px 0px;
+}
+
+div.metabar_module:first-child {
+	border-top: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+div.metabar_module h2 {
+	font-size: 10pt;
+	font-weight: bold;
+	padding: 0px;
+	margin: 0px 0px 2mm;
+}
+
+#content {
+	border-right: 1px solid black;
+	margin: 0px 55mm 0px 0px;
+	padding: 0px 2mm 0px 0px;
+}
+
+#footer {
+	clear: both;
+	height: 5mm;
+}
+
+table.listtab {
+	border-collapse: collapse;
+}
+
+table.listtab th {
+	font-weight: bold;
+	color: black;
+	text-align: left;
+	padding-left: 1ex;
+}
+
+table.listtab td {
+	border-top: 1px solid #eee;
+}
+
+table.listtab tr:first-child td {
+	border-top: 1px solid #666;
+}
+
+table.listtab tbody tr:hover {
+	background: #eee;
+}

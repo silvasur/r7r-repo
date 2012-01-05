@@ -10,7 +10,7 @@
  * See "ratatoeskr/licenses/ratatoeskr" for more information.
  */
 
-require_once(dirname(__FILE__) . "/../config.php");
+require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/utils.php");
 
 /*

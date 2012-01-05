@@ -1,0 +1,35 @@
+<ste:load name="master.html" />
+<ste:block name="content">
+	<h2>Latest Packages</h2>
+	<table class="listtab fullwidth">
+		<thead>
+			<tr>
+				<th>Package Name</th>
+				<th>Version</th>
+				<th>Description</th>
+				<th>Last update</th>
+			</tr>
+		</thead>
+		<tbody>
+			<ste:if>
+				<ste:set var="pkgs_n"><ste:arraylen array="latest_pkgs" /></ste:set>
+				~{$pkgs_n|gt|0}
+				<ste:then>
+					<ste:foreach array="latest_pkgs" value="pkg">
+						<tr>
+							<td><ste:escape>$pkg[name]</ste:escape></td>
+							<td><ste:escape>$pkg[version]</ste:escape></td>
+							<td><ste:escape>$pkg[description]</ste:escape></td>
+							<td><ste:date format="%d. %h. %Y, %H:%M:%S">$pkg[last_update]</ste:date></td>
+						</tr>
+					</ste:foreach>
+				</ste:then>
+				<ste:else>
+					<tr>
+						<td style="text-align: center; font-style: italic;" colspan="4">No Packages available.</td>
+					</tr>
+				</ste:else>
+			</ste:if>
+		</tbody>
+	</table>
+</ste:block>

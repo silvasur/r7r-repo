@@ -1,0 +1,90 @@
+<ste:mktag name="menu_elem" mandatory="name|path">
+	<li?{~{$menu|eq|$_tag_parameters[name]}| class="active"|}>
+		<a href="${rel_path_to_root}${_tag_parameters[path]}"><ste:tagcontent /></a>
+	</li>
+</ste:mktag>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<title><ste:escape>?{$title|$title - $repo[name]|$repo[name]}</ste:escape></title>
+	<link rel="stylesheet" type="text/css" media="screen" href="$rel_path_to_root/r7r_repo/css/common.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="$rel_path_to_root/r7r_repo/css/main.css" />
+</head>
+<body>
+	<div id="maincontainer">
+		<div id="heading">
+			<h1><ste:escape>$repo[name]</ste:escape></h1>
+			<span id="subheading"><ste:escape>$repo[description]</ste:escape></span>
+		</div>
+		<ul id="mainmenu">
+			<ste:menu_elem name="home" path="">Home</ste:menu_elem>
+			<ste:if>
+				$user[logged_in]
+				<ste:then>
+					<ste:if>
+						$user[admin]
+						<ste:then>
+							<ste:menu_elem name="admin" path="/admin">Administration</ste:menu_elem>
+							<ste:menu_elem name="upload" path="/upload">Upload Package</ste:menu_elem>
+						</ste:then>
+						<ste:else>
+							?{$repo[public]|<ste:menu_elem name="upload" path="/upload">Upload Package</ste:menu_elem>|}
+						</ste:else>
+					</ste:if>
+					<ste:menu_elem name="my_plugins" path="/my_plugins">My Plugins</ste:menu_elem>
+					<ste:menu_elem name="account" path="/account">My Account</ste:menu_elem>
+					<ste:menu_elem name="logout" path="/logout">Logout</ste:menu_elem>
+				</ste:then>
+				<ste:else>
+					?{$repo[public]|<ste:menu_elem name="register" path="/register">Register</ste:menu_elem>|}
+				</ste:else>
+			</ste:if>
+		</ul>
+		<div id="contentwrapper">
+			<div id="metabar">
+				<div class="metabar_module">
+					<h2>Repository Base URL</h2>
+					<input type="text" readonly="readonly" value="<ste:escape>$repo[baseurl]</ste:escape>" />
+				</div>
+				<div class="metabar_module">
+					<form action="$rel_path_to_root/search" method="POST" accept-charset="UTF-8">
+						<h2>Search</h2>
+						<input type="text" name="searchterm" /><br />
+						<input type="submit" />
+					</form>
+				</div>
+				<div class="metabar_module">
+					<ste:if>
+						$user[logged_in]
+						<ste:then>
+							Welcome, <strong><ste:escape>$user[name]</ste:escape></strong>!
+						</ste:then>
+						<ste:else>
+							<form action="$rel_path_to_root/login" method="POST" accept-charset="UTF-8">
+								<h2>Login</h2>
+								<p>
+									<strong>Name:</strong><br />
+									<input type="text" name="username" />
+								</p>
+								<p>
+									<strong>Password:</strong><br />
+									<input type="password" name="password" />
+								</p>
+								<p><input type="submit" name="login" /></p>
+								?{$repo[public]|No account? <a href="$rel_path_to_root/register">Register for a new account.</a>|}
+							</form>
+						</ste:else>
+					</ste:if>
+				</div>
+				<ste:block name="additional_metabar_modules" />
+			</div>
+			<div id="content">
+				<ste:block name="content" />
+			</div>
+		</div>
+		<div id="footer"></div>
+	</div>
+</body>
+</html>

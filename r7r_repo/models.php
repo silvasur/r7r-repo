@@ -2,7 +2,6 @@
 
 require_once(dirname(__FILE__) . "/db.php");
 require_once(dirname(__FILE__) . "/utils.php");
-db_connect();
 
 /* Exceptions copied from Ratatöskr */
 class DoesNotExistError extends Exception { }
@@ -178,8 +177,8 @@ class User extends BySQLRowEnabled
 			$obj->name    = $name;
 			$obj->pwhash  = "";
 			$obj->isadmin = False;
-			qdb("INSERT INTO `PREFIX_users` (`name`, `pwhash`, isadmin`) VALUES ('%s', '', 0)", $name);
-			$this->id = mysql_insert_id();
+			qdb("INSERT INTO `PREFIX_users` (`name`, `pwhash`, `isadmin`) VALUES ('%s', '', 0)", $name);
+			$obj->id = mysql_insert_id();
 			return $obj;
 		}
 	}
@@ -281,7 +280,7 @@ class Package extends BySQLRowEnabled
 			qdb("INSERT INTO `PREFIX_packages` (`name`, `user`, `lastupdate`, `lastversion`, `txtversion`, description`, `description`) VALUES ('%s', %d, UNIX_TIMESTAMP(), 0, '', '')", $name, $user->get_id());
 			$obj->id = mysql_insert_id();
 			
-			mkdir(dirname(__FILE__) . "/packages/" . $this->name);
+			mkdir(dirname(__FILE__) . "/../packages/" . $this->name);
 			
 			return $obj;
 		}
@@ -311,7 +310,7 @@ class Package extends BySQLRowEnabled
 		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE 1");
 		while($sqlrow = mysql_fetch_assoc($result))
 			$packagelist[] = array($sqlrow["name"], $sqlrow["lastversion"], $sqlrow["description"]);
-		file_put_contents(dirname(__FILE__) . "/packagelist", serialize($packagelist));
+		file_put_contents(dirname(__FILE__) . "/../packagelist", serialize($packagelist));
 	}
 	
 	public static function all()
@@ -351,10 +350,10 @@ class Package extends BySQLRowEnabled
 		$pkg->updatepath = $settings["root_url"] . "/packages/" . urlencode($this->name) . "/update";
 		
 		$pkg_ser = $pkg->save();
-		file_put_contents(dirname(__FILE__) . "/packages/" . urlencode($this>name) . "/versions/" . $pkg->versioncount, $pkg_ser);
-		file_put_contents(dirname(__FILE__) . "/packages/" . urlencode($this>name) . "/versions/current", $pkg_ser);
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/versions/" . $pkg->versioncount, $pkg_ser);
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/versions/current", $pkg_ser);
 		$meta = $pkg->extract_meta();
-		file_put_contents(dirname(__FILE__) . "/packages/" . urlencode($this>name) . "/meta", serialize($meta));
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/meta", serialize($meta));
 		
 		$this->lastversion = $pkg->versioncount;
 		$this->txtversion  = $pkg->versiontext;
@@ -364,10 +363,10 @@ class Package extends BySQLRowEnabled
 		
 		$update_info = array(
 			"current-version" => $this->lastversion,
-			"dl-path"         => $settings["root_url"] . "/packages/" . urlencode($this->name) . "/versions/" . $this->lastversion;
+			"dl-path"         => $settings["root_url"] . "/packages/" . urlencode($this->name) . "/versions/" . $this->lastversion
 		);
 		
-		file_put_contents(dirname(__FILE__) . "/packages/" . urlencode($this>name) . "/update", serialize($update_info));
+		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this>name) . "/update", serialize($update_info));
 		
 		self::update_lists();
 	}
@@ -380,9 +379,18 @@ class Package extends BySQLRowEnabled
 	public function delete()
 	{
 		qdb("DELETE FROM `PREFIX_packages` WHERE `id` = %d", $this->id);
-		delete_directory(dirname(__FILE__) . "/packages/" . $this->name);
+		delete_directory(dirname(__FILE__) . "/../packages/" . $this->name);
 		self::update_lists();
 	}
+}
+
+function update_repometa()
+{
+	global $settings;
+	file_put_contents(dirname(__FILE__) . "/../repometa", serialize(array(
+		"name"        => $settings["repo_name"],
+		"description" => $settings["repo_description"]
+	)));
 }
 
 ?>

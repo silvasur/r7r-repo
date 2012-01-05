@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<title>Setup</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="$rel_path_to_root/r7r_repo/css/common.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="$rel_path_to_root/r7r_repo/css/setup.css" />
+</head>
+<body>
+	<div id="maincontainer">
+		<h1>Setup</h1>
+		<ste:if>
+			$error
+			<ste:then>
+				<div class="error">
+					<ste:escape>$error</ste:escape>
+				</div>
+			</ste:then>
+		</ste:if>
+		<form action="$rel_path_to_root/setup" method="POST" accept-charset="UTF-8">
+			<p>
+				<strong>Admin username</strong><br />
+				<input type="text" name="admin_name" value="" />
+			</p>
+			<p>
+				<strong>Admin initial password</strong><br />
+				<input type="password" name="admin_password" />
+			</p>
+			<p>
+				<strong>Repository name</strong><br />
+				<input type="text" name="repo_name" />
+			</p>
+			<p>
+				<strong>Repository description</strong><br />
+				<input type="text" name="repo_description" />
+			</p>
+			<p>
+				<strong>Repostory Base URL</strong><br />
+				<input type="text" name="repo_baseurl" value="<ste:escape>$baseurl_predicted</ste:escape>"/>
+			</p>
+			<p>
+				<strong>Repository mode</strong><br />
+				<select name="repo_mode">
+					<option value="public" selected="selected">Public - Everyone (ie. registered users) is allowed to publish packages.</option>
+					<option value="private"> Private - Only administrators are allowed to publish packages.</option>
+				</select>
+			</p>
+			<input type="submit" name="send_data" />
+		</form>
+	</div>
+</body>
+</html>
