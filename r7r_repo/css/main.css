@@ -23,12 +23,13 @@ h2 {
 	height: 10mm;
 	padding: 0px;
 	margin: 0px 0px 2mm;
-	overflow: hidden;
 }
 
 #mainmenu li {
 	float: left;
 	margin: 0px 0px 2mm;
+	height: 10mm;
+	overflow: hidden;
 }
 
 #mainmenu li a {

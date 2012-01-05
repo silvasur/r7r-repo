@@ -1,0 +1,16 @@
+<ste:mktag name="default_error">
+	<ste:if>
+		$error
+		<ste:then>
+			<div class="error"><ste:escape>$error</ste:escape></div>
+		</ste:then>
+	</ste:if>
+</ste:mktag>
+<ste:mktag name="default_success">
+	<ste:if>
+		$success
+		<ste:then>
+			<div class="success"><ste:escape>$success</ste:escape></div>
+		</ste:then>
+	</ste:if>
+</ste:mktag>

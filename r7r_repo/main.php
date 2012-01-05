@@ -99,7 +99,7 @@ $url_handlers = array(
 		else
 			$ste->vars["user"] = array(
 				"logged_in" => True,
-				"name"      => $user->name,
+				"name"      => $user->get_name(),
 				"admin"     => $user->isadmin
 			);
 	},
@@ -126,6 +126,53 @@ $url_handlers = array(
 		); }, $latest);
 		
 		echo $ste->exectemplate("home.html");
+	},
+	"login" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user;
+		
+		if(($user === NULL) and isset($_POST["login"]))
+		{
+			try
+			{
+				$user = User::by_name($_POST["username"]);
+				if(PasswordHash::validate($_POST["password"], $user->pwhash))
+				{
+					$ste->vars["success"] = "Logged in successfully.";
+					$_SESSION["r7r_repo_login_name"] = $user->get_name();
+					$url_next = array("_prelude", "index");
+				}
+				else
+				{
+					$user = NULL;
+					$ste->vars["error"] = "Username / Password wrong.";
+					$url_next = array("index");
+				}
+			}
+			catch(DoesNotExistError $e)
+			{
+				$user = NULL;
+				$ste->vars["error"] = "Username / Password wrong.";
+				$url_next = array("index");
+			}
+		}
+		else
+			$url_next = array("index");
+	},
+	"logout" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user;
+		
+		if($user === NULL)
+		{
+			$url_next = array("index");
+			return;
+		}
+		
+		$user = NULL;
+		unset($_SESSION["r7r_repo_login_name"]);
+		$ste->vars["success"] = "Logged out successfully.";
+		$url_next = array("_prelude", "index");
 	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
