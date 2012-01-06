@@ -513,6 +513,12 @@ $url_handlers = array(
 		
 		echo package_list($my_packages, "My Packages");
 	},
+	"search" => function(&$data, $url_now, &$url_next)
+	{
+		$url_next = array();
+		$search_result = Package::search($_POST["searchterm"]);
+		echo package_list($search_result, "Search Result");
+	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
 		global $settings, $ste;
