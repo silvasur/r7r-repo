@@ -78,6 +78,22 @@ if(isset($_SESSION["r7r_repo_login_name"]))
 	}
 }
 
+function package_list($pkgs, $heading)
+{
+	global $ste;
+	
+	$ste->vars["list_heading"] = $heading;
+	$ste->vars["pkgs"] = array_map(function($pkg) { return array(
+		"name"        => $pkg->get_name(),
+		"version"     => $pkg->txtversion,
+		"author"      => $pkg->author,
+		"description" => $pkg->description,
+		"last_update" => $pkg->lastupdate
+	); }, $pkgs);
+	
+	return $ste->exectemplate("package_list.html");
+}
+
 /* url handlers */
 $url_handlers = array(
 	"_prelude" => function(&$data, $url_now, &$url_next)
@@ -119,15 +135,8 @@ $url_handlers = array(
 		$ste->vars["menu"] = "home";
 		
 		$latest = Package::latest();
-		$ste->vars["latest_pkgs"] = array_map(function($pkg) { return array(
-			"name"        => $pkg->get_name(),
-			"version"     => $pkg->txtversion,
-			"author"      => $pkg->author,
-			"description" => $pkg->description,
-			"last_update" => $pkg->lastupdate
-		); }, $latest);
 		
-		echo $ste->exectemplate("home.html");
+		echo package_list($latest, "Latest Packages");
 	},
 	"login" => function(&$data, $url_now, &$url_next)
 	{
@@ -490,6 +499,19 @@ $url_handlers = array(
 		}
 		
 		echo $ste->exectemplate("upload.html");
+	},
+	"my_packages" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user;
+		
+		if($user === NULL)
+			throw new NotFoundError();
+		
+		$ste->vars["menu"] = "my_packages";
+		
+		$my_packages = $user->get_packages();
+		
+		echo package_list($my_packages, "My Packages");
 	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{

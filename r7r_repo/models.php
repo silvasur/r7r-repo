@@ -213,9 +213,9 @@ class User extends BySQLRowEnabled
 	public function get_packages()
 	{
 		$rv = array();
-		$result = qdb("SELECT `id`, `name`, `user`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `user` = %d", $this->id);
+		$result = qdb("SELECT `id`, `name`, `user`, `author`, `lastversion`, `description`, `lastupdate`, `txtversion` FROM `PREFIX_packages` WHERE `user` = %d", $this->id);
 		while($sqlrow = mysql_fetch_assoc($result))
-			$rv[] = Package::by_sqlrow($result);
+			$rv[] = Package::by_sqlrow($sqlrow);
 		return $rv;
 	}
 	
