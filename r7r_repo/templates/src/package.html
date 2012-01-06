@@ -1,0 +1,37 @@
+<ste:load name="master.html" />
+<ste:block name="content">
+	<ste:default_error />
+	<ste:default_success />
+	
+	<h2><ste:escape>$package[name]</ste:escape></h2>
+	<ste:escape>$package[description]</ste:escape>
+	
+	<p><a href="$rel_path_to_root/packages/<ste:escape>$package[name]</ste:escape>/versions/current">Download package.</a></p>
+	
+	<p><strong>Current version:</strong> <ste:escape>$package[version]</ste:escape></p>
+	<p><strong>Author:</strong> <ste:escape>$package[author]</ste:escape></p>
+</ste:block>
+<ste:if>
+	$package[admin_mode]
+	<ste:then>
+		<ste:block name="additional_metabar_modules">
+			<div class="metabar_module">
+				<form action="$rel_path_to_root/p/<ste:escape>$package[name]</ste:escape>" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+					<h2>Upload a new version</h2>
+					<input type="file" name="pkgfile" /><br />
+					<input type="submit" name="new_version" />
+				</form>
+			</div>
+			<div class="metabar_module">
+				<form action="$rel_path_to_root/p/<ste:escape>$package[name]</ste:escape>" method="POST" accept-charset="UTF-8">
+					<h2>Delete package</h2>
+					<input type="submit" name="delete_package" />
+					<select name="really_delete">
+						<option value="yes">Yes</option>
+						<option value="no" selected="selected">No</option>
+					</select>
+				</form>
+			</div>
+		</ste:block>
+	</ste:then>
+</ste:if>

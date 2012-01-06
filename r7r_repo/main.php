@@ -364,6 +364,133 @@ $url_handlers = array(
 		
 		echo $ste->exectemplate("account.html");
 	},
+	"p" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $user;
+		
+		list($pkgname) = $url_next;
+		$url_next = array();
+		
+		if(empty($pkgname))
+			throw new NotFoundError();
+		
+		try
+		{
+			$pkg = Package::by_name($pkgname);
+		}
+		catch(DoesNotExistError $e)
+		{
+			throw new NotFoundError();
+		}
+		
+		$ste->vars["title"] = $pkg->get_name();
+		$admin_mode = (($user !== NULL) and (($user->isadmin) or ($user->get_id() == $pkg->get_user()->get_id())));
+		
+		if($admin_mode)
+		{
+			if(isset($_POST["delete_package"]) and ($_POST["really_delete"] == "yes"))
+			{
+				$pkg->delete();
+				$ste->vars["success"] = "Package deleted.";
+				$url_next = array("index");
+				return;
+			}
+			
+			if(isset($_POST["new_version"]))
+			{
+				if(is_uploaded_file($_FILES["pkgfile"]["tmp_name"]))
+				{
+					$raw_pkg = @file_get_contents($_FILES["pkgfile"]["tmp_name"]);
+					@unlink($_FILES["pkgfile"]["tmp_name"]);
+					if($raw_pkg === False)
+						$ste->vars["error"] = "Upload failed.";
+					else
+					{
+						try
+						{
+							$newpkg = PluginPackage::load($raw_pkg);
+							$pkg->newversion($newpkg);
+							$ste->vars["success"] = "Successfully uploaded new version.";
+						}
+						catch(InvalidPackage $e)
+						{
+							$ste->vars["error"] = "Invalid package. Reason: " . $e->getMessage();
+						}
+						catch(NotAllowedError $e)
+						{
+							$ste->vars["error"] = "This is not allowed. Reason: " . $e->getMessage();
+						}
+					}
+				}
+				else
+					$ste->vars["error"] = "Upload failed.";
+			}
+		}
+		
+		$ste->vars["package"] = array(
+			"name"        => $pkg->get_name(),
+			"description" => $pkg->description,
+			"author"      => $pkg->author,
+			"admin_mode"  => $admin_mode,
+			"version"     => $pkg->txtversion
+		);
+		
+		echo $ste->exectemplate("package.html");
+	},
+	"upload" => function(&$data, $url_now, &$url_next)
+	{
+		global $ste, $settings, $user;
+		
+		if(($user === NULL) or ((!$user->isadmin) and ($settings["repo_mode"] == "private")))
+			throw new NotFoundError();
+		
+		$url_now = array();
+		$ste->vars["menu"]  = "upload";
+		$ste->vars["title"] = "Upload new package";
+		
+		if(isset($_POST["upload_package"]))
+		{
+			if(is_uploaded_file($_FILES["pkgfile"]["tmp_name"]))
+			{
+				$raw_pkg = @file_get_contents($_FILES["pkgfile"]["tmp_name"]);
+				@unlink($_FILES["pkgfile"]["tmp_name"]);
+				if($raw_pkg === False)
+					$ste->vars["error"] = "Upload failed.";
+				else
+				{
+					try
+					{
+						$newpkg = PluginPackage::load($raw_pkg);
+						$pkg = Package::create($newpkg->name, $user);
+						$pkg->newversion($newpkg);
+						$ste->vars["success"] = "Successfully uploaded new package.";
+						$url_next = array("p", $newpkg->name);
+						return;
+					}
+					catch(InvalidPackage $e)
+					{
+						$ste->vars["error"] = "Invalid package. Reason: " . $e->getMessage();
+					}
+					catch(NotAllowedError $e)
+					{
+						$ste->vars["error"] = "This is not allowed. Reason: " . $e->getMessage();
+					}
+					catch(InvalidArgumentException $e)
+					{
+						$ste->vars["error"] = $e->getMessage();
+					}
+					catch(AlreadyExistsError $e)
+					{
+						$ste->vars["error"] = "A package with this name already exists.";
+					}
+				}
+			}
+			else
+				$ste->vars["error"] = "Upload failed.";
+		}
+		
+		echo $ste->exectemplate("upload.html");
+	},
 	"setup" => function(&$data, $url_now, &$url_next)
 	{
 		global $settings, $ste;

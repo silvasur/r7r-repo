@@ -61,6 +61,23 @@ function array2dir($a, $dir)
 	}
 }
 
+function validate_url     ($u) { return preg_match("/^http[s]{0,1}:\\/\\/.*$/", $u) != 0; }
+function validate_arraydir($a)
+{
+	if(!is_array($a))
+		return False;
+	foreach($a as $k=>$v)
+	{
+		if(!is_string($k))
+			return False;
+		if(is_array($v) and (!validate_arraydir($v)))
+			return False;
+		elseif(!is_string($v))
+			return False;
+	}
+	return True;
+}	
+
 /*
  * Class: InvalidPackage
  * An Exception that <PluginPackage>'s function can throw, if the package is invalid.
@@ -122,23 +139,6 @@ class PluginPackage
 	 */
 	public function validate()
 	{
-		function validate_url     ($u) { return preg_match("/^http[s]{0,1}:\\/\\/.*$/", $u) != 0; }
-		function validate_arraydir($a)
-		{
-			if(!is_array($a))
-				return False;
-			foreach($a as $k=>$v)
-			{
-				if(!is_string($k))
-					return False;
-				if(is_array($v) and (!validate_arraydir($v)))
-					return False;
-				elseif(!is_string($v))
-					return False;
-			}
-			return True;
-		}
-		
 		if(!is_string($this->code))
 			throw new InvalidPackage("Invalid code value.");
 		if(!is_string($this->classname))
@@ -156,9 +156,9 @@ class PluginPackage
 		if(!is_string($this->short_description))
 			throw new InvalidPackage("Invalid short_description value.");
 		
-		if(($this->updatepath !== NULL) and (!validate_url($this->updatepath)))
-			throw new InvalidPackage("Invalid updatepath value. Must be an URL.");
-		if(($this->web !== NULL) and (!validate_url($this->web)))
+		if((!empty($this->updatepath)) and (!validate_url($this->updatepath)))
+			throw new InvalidPackage("Invalid updatepath value. Must be an URL. " .$this->updatepath);
+		if((!empty($this->web)) and (!validate_url($this->web)))
 			throw new InvalidPackage("Invalid web value. Must be an URL.");
 		if(($this->license !== NULL) and (!is_string($this->license)))
 			throw new InvalidPackage("Invalid license value.");

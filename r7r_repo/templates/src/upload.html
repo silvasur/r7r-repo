@@ -1,0 +1,12 @@
+<ste:load name="master.html" />
+<ste:block name="content">
+	<ste:default_error />
+	<ste:default_success />
+	
+	<form action="$rel_path_to_root/upload" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+		<h2>Upload a new package</h2>
+		
+		<strong>Package file:</strong> <input type="file" name="pkgfile" /><br />
+		<input type="submit" name="upload_package" />
+	</form>
+</ste:block>

@@ -367,7 +367,7 @@ class Package extends BySQLRowEnabled
 		
 		$update_info = array(
 			"current-version" => $this->lastversion,
-			"dl-path"         => $settings["root_url"] . "/packages/" . urlencode($this->name) . "/versions/" . $this->lastversion
+			"dl-path"         => $settings["repo_baseurl"] . "/packages/" . urlencode($this->name) . "/versions/" . $this->lastversion
 		);
 		
 		file_put_contents(dirname(__FILE__) . "/../packages/" . urlencode($this->name) . "/update", serialize($update_info));
