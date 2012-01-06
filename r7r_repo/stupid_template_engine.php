@@ -83,7 +83,7 @@ class ParseCompileError extends \Exception
 	public function rewrite($code)
 	{
 		$line = substr_count(str_replace("\r\n", "\n", $code), "\n", 0, $this->off + 1) + 1;
-		$this->message = "{$this->msg} (Template $tpl, Line $line)";
+		$this->message = "{$this->msg} (Template {$this->tpl}, Line $line)";
 		$this->is_rewritten = True;
 	}
 }
