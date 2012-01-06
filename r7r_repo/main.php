@@ -124,7 +124,7 @@ $url_handlers = array(
 			"version"     => $pkg->txtversion,
 			"author"      => $pkg->author,
 			"description" => $pkg->description,
-			"last_update" => $pkg->lastversion
+			"last_update" => $pkg->lastupdate
 		); }, $latest);
 		
 		echo $ste->exectemplate("home.html");

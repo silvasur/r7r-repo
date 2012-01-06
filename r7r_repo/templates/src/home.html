@@ -25,7 +25,7 @@
 							<td><ste:escape>$pkg[version]</ste:escape></td>
 							<td><ste:escape>$pkg[description]</ste:escape></td>
 							<td><ste:escape>$pkg[author]</ste:escape></td>
-							<td><ste:date format="%d. %h. %Y, %H:%M:%S">$pkg[last_update]</ste:date></td>
+							<td><ste:date timestamp="$pkg[last_update]">%d. %h. %Y, %H:%M:%S</ste:date></td>
 						</tr>
 					</ste:foreach>
 				</ste:then>
