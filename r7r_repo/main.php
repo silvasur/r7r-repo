@@ -530,7 +530,7 @@ $url_handlers = array(
 		$url_next = array();
 		
 		/* Test file permissions */
-		$permissions_missing = array_filter(array("/packages", "/packagelist", "/repometa"), function($f) { return !@is_writable(dirname(__FILE__) . "/..$f"); });
+		$permissions_missing = array_filter(array("/packages", "/packagelist", "/repometa", "/r7r_repo/templates/transc"), function($f) { return !@is_writable(dirname(__FILE__) . "/..$f"); });
 		if(!empty($permissions_missing))
 			$ste->vars["error"] = "No writing permissions on these files/directories: \"" . implode("\", \"", $permissions_missing) . "\"";
 		else
@@ -576,16 +576,16 @@ $ste->vars["rel_path_to_root"] = $rel_path_to_root;
 /* Enforce setup */
 if(!@$settings["setup_finished"])
 	$urlpath = array("setup");
-/*try
-{*/
+try
+{
 	url_process($urlpath, $url_handlers, $data);
-/*}
+}
 catch(Exception $e)
 {
 	header("HTTP/1.1 500 Internal Server Error");
 	header("Content-Type: text/plain");
 	echo "Internal Server Error\nReason: " . get_class($e) . "(" . $e->getMessage() . ") thrown.\n";
-}*/
+}
 
 /* save settings */
 $settings->save();

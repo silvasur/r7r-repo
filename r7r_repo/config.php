@@ -1,12 +1,12 @@
 <?php
 
-define("CONFIG_FILLED_OUT", True);
+define("CONFIG_FILLED_OUT", False);
 define("SKIP_TABLE_CREATION", False);
 
-$config["mysql"]["server"] = "localhost";
-$config["mysql"]["db"]     = "s_db_47";
-$config["mysql"]["user"]   = "dbuser_47";
-$config["mysql"]["passwd"] = "DfXVQBoVOBPbLlL";
-$config["mysql"]["prefix"] = "repo_";
+$config["mysql"]["server"] = "";
+$config["mysql"]["db"]     = "";
+$config["mysql"]["user"]   = "";
+$config["mysql"]["passwd"] = "";
+$config["mysql"]["prefix"] = "";
 
 ?>
