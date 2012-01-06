@@ -556,7 +556,7 @@ $url_handlers = array(
 					
 					$settings["setup_finished"] = True;
 					
-					$url_next = array("index");
+					$url_next = array("_prelude", "index");
 					return;
 				}
 			}
