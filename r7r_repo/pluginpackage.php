@@ -236,15 +236,15 @@ class PluginPackage
 	{
 		$meta = new PluginPackageMeta();
 		
-		$meta->name              = $this>name;
-		$meta->author            = $this>author;
-		$meta->versiontext       = $this>versiontext;
-		$meta->versioncount      = $this>versioncount;
-		$meta->api               = $this>api;
-		$meta->short_description = $this>short_description;
-		$meta->updatepath        = $this>updatepath;
-		$meta->web               = $this>web;
-		$meta->license           = $this>license;
+		$meta->name              = $this->name;
+		$meta->author            = $this->author;
+		$meta->versiontext       = $this->versiontext;
+		$meta->versioncount      = $this->versioncount;
+		$meta->api               = $this->api;
+		$meta->short_description = $this->short_description;
+		$meta->updatepath        = $this->updatepath;
+		$meta->web               = $this->web;
+		$meta->license           = $this->license;
 		
 		return $meta;
 	}
