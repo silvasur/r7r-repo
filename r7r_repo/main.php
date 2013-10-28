@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `PREFIX_users` (
 }
 
 /* Include more files... */
-require_once(dirname(__FILE__) . "/stupid_template_engine.php");
+require_once(dirname(__FILE__) . "/ste.php");
 require_once(dirname(__FILE__) . "/models.php");
 require_once(dirname(__FILE__) . "/urlprocess.php");
 require_once(dirname(__FILE__) . "/pwhash.php");
