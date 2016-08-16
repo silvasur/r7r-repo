@@ -22,7 +22,7 @@ r7r_repo uses many files (db.php, pwhash.php, urlprocess, utils.php, parts of
 models.php) of Ratatöskr by the Ratatöskr Team, which ist also licensed under the X11/MIT license for
 free software.
 
-r7r_repo uses the Stupid Template Engine by Kevin Chabowsi which is also licensed unter the
+r7r_repo uses the Stupid Template Engine by Laria Carolin Chabowski which is also licensed unter the
 X11/MIT license for free software.
 
 r7r_repo uses the pluginpackage.php file by the Ratatöskr Team, which is licensed under the WTFPL:
