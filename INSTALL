@@ -3,38 +3,36 @@ How to install r7r_repo
 
 1. Open the file 'r7r_repo/config.php' with a text editor.
    Replace
-   	define("CONFIG_FILLED_OUT", False);
+        define("CONFIG_FILLED_OUT", False);
    with
-   	define("CONFIG_FILLED_OUT", True);
+        define("CONFIG_FILLED_OUT", True);
    and fill in your MySQL connection details.
-   
+
    Example:
    Let's say your MySQL server is 'localhost' (it is almost always 'localhost'), the database is called 'cool_db', your user is 'sqluser' and it's password is 'mypassword'. And you want the database prefix to be 'repo_'. Then your config file should look like this:
-   
-	<?php
-	
-	define("CONFIG_FILLED_OUT", True);
-	define("SKIP_TABLE_CREATION", False);
-	
-	$config["mysql"]["server"] = "localhost";
-	$config["mysql"]["db"]     = "cool_db";
-	$config["mysql"]["user"]   = "sqluser";
-	$config["mysql"]["passwd"] = "mypassword";
-	$config["mysql"]["prefix"] = "repo_";
-	
-	?>
+
+        <?php
+
+        define("CONFIG_FILLED_OUT", True);
+        define("SKIP_TABLE_CREATION", False);
+
+        $config["mysql"]["server"] = "localhost";
+        $config["mysql"]["db"]     = "cool_db";
+        $config["mysql"]["user"]   = "sqluser";
+        $config["mysql"]["passwd"] = "mypassword";
+        $config["mysql"]["prefix"] = "repo_";
 
 2. Upload everything to your webhost.
 
 3. Go to the location of your new repo in your favorite web browser.
    The installation dialog will automatically show up. If there is an error about missing writing permissions, change the permissions of the listed files, so your webserver can write them. If you do not know the user / group of your webserver (usually somethng like 'apache', 'nobody' or 'httpd') you can also give everyone writing permissions. Keep in mind that this might be an security issue on multiuser systems.
-   
+
    If there is no error message, just type in the details needed by the setup process and hit submit.
 
 4. Your new r7r_repo installation should now be ready to go. But to increase performance, you should make a last modification to config.php:
    Replace
-   	define("SKIP_TABLE_CREATION", False);
+        define("SKIP_TABLE_CREATION", False);
    with
-   	define("SKIP_TABLE_CREATION", True);
+        define("SKIP_TABLE_CREATION", True);
 
 5. There is no step 5 :-)

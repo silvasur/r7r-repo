@@ -8,5 +8,3 @@ $config["mysql"]["db"]     = "";
 $config["mysql"]["user"]   = "";
 $config["mysql"]["passwd"] = "";
 $config["mysql"]["prefix"] = "";
-
-?>
